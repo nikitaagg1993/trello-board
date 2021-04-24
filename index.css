@@ -1,0 +1,270 @@
+body {
+    font-family: Sans-serif;
+    font-size: 14;
+    width: 100%;
+    background-color: #E0E0E0;
+    margin: 0;
+}
+
+h1 {
+    position: absolute;
+    left: 16px;
+    top: 16px;
+}
+
+.dd {
+    max-width: 100%;
+    top: 40px;
+    margin: 0 auto;
+    display: block;
+    margin-left: 20%;
+}
+
+ol {
+    transition: border-color 2s ease, all 0.1s ease;
+}
+
+ol.list {
+    padding-top: 2em;
+    padding-left: 15px;
+    max-width: 650px;
+    margin: 0 auto;
+    float: right;
+    width: 60%;
+}
+
+ol.list h3,
+ol.list .actions,
+ol.list label {
+    float: left;
+    width: 30%;
+}
+
+ol.list > li,
+ol.list > h3 {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+h2,
+h1,
+button {
+    margin-left: 5px;
+    font-family: 'Arbutus Slab', serif;
+}
+
+h2 {
+    color: #607D8B;
+}
+
+.dd-handle .material-icons {
+    color: #B0BEC5;
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 2rem;
+    position: relative;
+    right: 0;
+    color: #607D8B;
+    padding: 5px 16px;
+}
+
+button>.material-icons {
+    line-height: 0.2;
+    position:relative;
+    top:7px;
+}
+
+.dd-item:hover,
+button:hover {
+    color: #00838F;
+}
+
+button.addbutton {
+    background-color: #EEEEEE;
+    color: #607D8B;
+    width: 100%;
+}
+
+.list > button.addbutton {
+    max-width: 330px;
+}
+
+
+button {
+    align-items: center;
+    background-color: #EEEEEE;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12);
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    color: #607D8B;
+    position: relative;
+    margin: 0;
+    min-width: 44px;
+    padding: 10px 16px;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1;
+    overflow: hidden;
+    outline: none;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+ol.trello {
+    border-top: 5px solid #78909C;
+    width: 20%;
+    height: auto;
+    margin: 1%;
+    max-width: 250px;
+    min-width: 120px;
+    display: inline-block;
+    vertical-align: top;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12);
+    flex-direction: column;
+    min-height: 200px;
+    z-index: 1;
+    position: relative;
+    background: #fff;
+    padding: 1em;
+    border-radius: 2px;
+}
+
+.dd-item {
+    display: block;
+    position: relative;
+    list-style: none;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    min-height: 48px;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    font-size: 16px;
+    min-height: 120px;
+    overflow: hidden;
+    z-index: 1;
+    position: relative;
+    background: #fff;
+    border-radius: 2px;
+    box-sizing: border-box;
+}
+
+.actions {
+    border-top: 1px solid rgba(0, 0, 0, .1);
+    font-size: 8px;
+    line-height: normal;
+    width: 100%;
+    color: #B0BEC5;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+.dd {
+    position: relative;
+    display: block;
+    list-style: none;
+}
+
+.dd-item {
+    display: block;
+    margin: 5px 0;
+    padding: 5px 10px;
+    color: #333;
+    text-decoration: none;
+    font-weight: bold;
+    border: 1px solid #ccc;
+    background: #fafafa;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+
+.dd-item:hover {
+    background: #fff;
+}
+
+.dd-item > button {
+    display: block;
+    position: relative;
+    cursor: move;
+    float: left;
+    width: 25px;
+    height: 20px;
+    margin: 5px 0;
+    padding: 0;
+    text-indent: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    border: 0;
+    background: transparent;
+    font-size: 12px;
+    line-height: 1;
+    text-align: center;
+    font-weight: bold;
+}
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+  
+.modal-content {
+    display: flex;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 30%;
+    display: 'none';
+    flex-direction: column;
+}
+menu {
+    padding: 0;
+    height: 35px;
+    width: 100%;
+    background-color: #00838F;
+}
+
+.menu-title {
+    float: left;
+    color: white;
+    font-size: 18px;
+    padding: 5px;
+}
+
+.trello__title {
+    padding: 10px ;
+}
+
+select, input {
+    display: block;
+    margin: 10px 10px 10px 0px;
+    padding: 10px;
+}
+
+.add-list {
+    float: right;
+    margin-right: 50px;
+}
+
+.list-heading {
+    display: inline;
+}
+
+.close {
+    float:right;
+}

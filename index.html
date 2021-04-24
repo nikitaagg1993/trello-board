@@ -1,0 +1,42 @@
+
+<html>
+    <head><link rel="stylesheet" href="index.css"> 
+    <script src="index.js"></script> </head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<body>
+    <menu class="trello menu">
+        <div class="menu-title">Trello Board</div>
+    </menu> 
+    <button class="add-list" id='addNewList'><i class="fa fa-plus"></i> Add List</button>
+    <div id='lists'>
+    </div>
+
+    </div>
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <div class='content'></div>
+            <h3 id="add-label">Add an item</h3>
+            Title: <input type="text" placeholder="Title" id="title"/>
+            Description: <input type="text" placeholder="Description" id="description"/>
+            <div class='modal-footer'>
+                <button id="add">Ok</button>
+                <button id="cancel">Cancel</button>
+        </div>
+        </div>
+    </div>
+    <div id="listModal" class="modal">
+        <div class="modal-content">
+            <div class='content'></div>
+            <h3 id="add-label">Add List</h3>
+            Title: <input type="text" placeholder="Title" id="listTitle"/>
+            <div class='modal-footer'>
+                <button id="ok">Ok</button>
+                <button id="cancelList">Cancel</button>
+        </div>
+        </div>
+    </div>
+    
+
+</body>
+</html>
