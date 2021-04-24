@@ -1,66 +1,49 @@
-let editting;
-
-function camelize(str) {
+const camelize = (str) => {
     return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function(match, index) {
       if (+match === 0) return ""; // or if (/\s+/.test(match)) for white spaces
       return index === 0 ? match.toLowerCase() : match.toUpperCase();
     });
   }
 
-// let allLists = {
-//     teams: {
-//         name: 'Teams',
-//         id:'teams',
-//         tasks: [
-//            {    id: 'feature',
-//                 title: 'Create design for fetaure',
-//                 description: 'Discuss and get designs'
-//             },
-//              {  id: 'design',
-//                 title: 'Create design for fetaure',
-//                 description: 'Discuss and get designs'
-//             }
-//         ]
-//     },
-//     products: {
-//         name: 'Products',
-//         id:'products',
-//         tasks: [{
-//                 title: 'Create design for fetaure',
-//                 description: 'Discuss and get designs'
-//             },
-//             {
-//                 title: 'Create design for fetaure',
-//                 description: 'Discuss and get designs'
-//             }]
-        
-//     }
-// }
+const getList = () => {
+    const allLists = window.localStorage.getItem('allLists') || "{}";
+    return JSON.parse(allLists);
+}
 
+const getTasks = () => {
+    const allTasks = window.localStorage.getItem('allTasks') || "[]";
+    return JSON.parse(allTasks);
+}
+
+
+const setList = (list) =>  window.localStorage.setItem('allLists', JSON.stringify(list));
+const setTasks = (tasks) =>  window.localStorage.setItem('allTasks', JSON.stringify(tasks));
+
+const removeElement = (id) => {
+    const element = document.getElementById(id)
+    element.parentNode.removeChild(element);
+}
 
 const addTaskItem = (parentId) => {
-    var modal = document.getElementById("myModal");
+    let modal = document.getElementById("myModal");
 
     const description = document.getElementById("description").value;
     const title = document.getElementById("title").value;
     const label = document.getElementById("add-label");
 
-    saveTask(parentId, { description, title })
+    saveTask(parentId, { description, title, id: camelize(title), parentId })
     label.innerHTML = "Add an item";
     modal.style.display = "none";
 }
 
 const addListEvent =  () => {
-    console.log('in add list event')
-    var modal = document.getElementById("listModal");
-
+    let modal = document.getElementById("listModal");
     const title = document.getElementById("listTitle").value;
-    console.log('title', title)
     saveList(title)
     modal.style.display = "none";
 }
 
-function createNewElement ({ elementType, className, id, text, value, name, title }) {
+const createNewElement = ({ elementType, className, id, text, value, name, title }) => {
     const newElement = document.createElement(elementType);
     if(className) newElement.className = className;
     if(id) newElement.id = id;
@@ -72,6 +55,9 @@ function createNewElement ({ elementType, className, id, text, value, name, titl
     if(value) newElement.value = value;
     if(name) newElement.name = name;
     if(title) newElement.title = title;
+    newElement.ondrop = () => false;
+    newElement.draggable =  false;
+
     return newElement;
 }
 
@@ -80,10 +66,10 @@ function createNewElement ({ elementType, className, id, text, value, name, titl
     modal.style.display = "block";
     document.getElementById("description").value = "";
     document.getElementById("title").value = "";
-    var add = document.getElementById("add");
+    let add = document.getElementById("add");
     add.onclick = () => addTaskItem(listId);
-    var cancel = document.getElementById("cancel");
-    cancel.onclick = cancelModal;
+    let cancel = document.getElementById("cancel");
+    cancel.onclick = () => cancelModal("myModal");
   }
 
 
@@ -91,125 +77,143 @@ function createNewElement ({ elementType, className, id, text, value, name, titl
     let modal = document.getElementById("listModal");
     modal.style.display = "block";
     document.getElementById("title").value = "";
-    var add = document.getElementById("ok");
-    console.log('add', add, addListEvent)
+    let add = document.getElementById("ok");
     add.onclick = addListEvent;
-    var cancel = document.getElementById("cancelList");
-    cancel.onclick = cancelModal;
+    let cancel = document.getElementById("cancelList");
+    cancel.onclick = () => cancelModal("listModal");
   }
 
 window.onload = () => {
+    const allLists = getList();
+    const allTasks = getTasks()
 
-    const allLists = window.localStorage.getItem('allLists') || "{}";
-    const parseLists = JSON.parse(allLists);
-
-    Object.keys(parseLists).forEach((item,index) => {
-        const list = parseLists[item];
-        renderList(list,item)
+    Object.keys(allLists).forEach((item) => {
+        const list = allLists[item];
+        const tasks = allTasks.filter(task => task.parentId === item)
+        renderList(list,item, tasks)
     });
 
     let addNewList = document.getElementById("addNewList");
     addNewList.onclick = addList;
-
 }
 
-const getList = () => {
-    const allLists = window.localStorage.getItem('allLists') || "{}";
-    return JSON.parse(allLists);
-}
 
-const cancelModal = () =>{
-    let modal = document.getElementById("myModal");
+const cancelModal = (modalId) =>{
+    let modal = document.getElementById(modalId);
     modal.style.display = "none";
 }
 
+const onDrag = (event, item) => {
+    event.dataTransfer.setData("id", item.id);
+}
+
+const onDrop = (event) => {
+    event.preventDefault();
+    const id = event.dataTransfer.getData("id");
+    const draggedElement = document.getElementById(id);
+    const parentId = event.currentTarget.id
+    event.currentTarget.querySelector(`#content-${parentId}`).appendChild(draggedElement);
+    const allTasks = getTasks()
+    const currentTaskIndex = allTasks.findIndex(item => item.id === id)
+    
+    allTasks[currentTaskIndex] = {
+        ...allTasks[currentTaskIndex],
+        parentId,
+    }
+    setTasks(allTasks)
+}
+
 window.onclick = function(event) {
-    var modal = document.getElementById("myModal");
+    let modal = document.getElementById("myModal");
     if (event.target == modal) {
       modal.style.display = "none";
     }
   }
 
+  const removeTask = (id) => {
+    const allTasks = getTasks()
+    const taskIndex = allTasks.findIndex(item => item.id === id)
+    allTasks.splice(taskIndex,1)
+    setTasks(allTasks)
+    removeElement(id)
+  }
+
   const renderListTask = ({id, title, description}, parentId) => {
-    const taskList = document.getElementById(parentId);
+    const taskList = document.getElementById(`content-${parentId}`);
     const listElement = createNewElement({ elementType: "li", className: "dd-item", id, title});
-    const titleElement = createNewElement({ elementType: "h3", className: "dd-handle", text: title, id, name: title });
-    const descriptionElement = createNewElement({ elementType: "h3", className: "dd-handle", text: description, id, name: title });
+    const titleElement = createNewElement({ elementType: "h4", className: "dd-handle list-heading", text: title, id, name: title });
+    const closeIcon = createNewElement({ elementType: "i",className: 'fa fa-times close', id:`close-${id}`});
+    closeIcon.onclick = () =>  removeTask(id, parentId)
+    const descriptionElement = createNewElement({ elementType: "h5", className: "dd-handle list-desc", text: description, id, name: title });
     listElement.appendChild(titleElement);
+    listElement.appendChild(closeIcon);
     listElement.appendChild(descriptionElement);
+    listElement.draggable = true;
+    listElement.ondragstart = (event) => onDrag(event,{id, title, description}, parentId )
     taskList.appendChild(listElement);
   }
 
   const removeList = (id) => {
-      console.log('id', id)
     const allLists = getList();
     delete allLists[id]
-    window.localStorage.setItem('allLists', JSON.stringify(allLists));
-    const mainList = document.getElementById(id)
-    mainList.parentNode.removeChild(mainList);
-    console.log('allList', allLists)
-
+    setList(allLists)
+    const allTasks = getTasks()
+    const indexes = []
+    allTasks.forEach((item, index) => {
+        if(item.parentId === id) {
+            indexes.push(index)
+        }
+    })
+    for (let i = indexes.length -1; i >= 0; i--)
+    allTasks.splice(indexes[i],1);
+    setTasks(allTasks)
+    removeElement(id)
   }
 
-  const renderList = (list, id) => {
+  const renderList = (list, id, tasks) => {
     const listContainer = document.getElementById('lists');
-    console.log('list', list, id, listContainer)
     const mainList = createNewElement({ elementType: "ol", className: "trello", id });
+    const content = createNewElement({ elementType: "div", className: "trello", id: `content-${id}` });
     const heading = createNewElement({ elementType: "h2",className: 'list-heading', text: list.name});
     const closeIcon = createNewElement({ elementType: "i",className: 'fa fa-times close'});
     closeIcon.onclick = () =>  removeList(id)
     const buttonContainer = createNewElement({ elementType: "div", className: 'actions'});
-    const button = createNewElement({ elementType: "button", className: 'addbutton'});
+    const button = createNewElement({ elementType: "button", className: 'addbutton', id: `add-${id}`});
     const plusIcon =  createNewElement({ elementType: "i", className: "fa fa-plus"});
-    button.onclick
+    button.onclick = () =>  addTask(id)
     button.appendChild(plusIcon)
+    buttonContainer.ondrop = () =>  false;
     const buttonText = document.createTextNode('Add New');
     button.appendChild(buttonText);
     buttonContainer.appendChild(button);
     mainList.appendChild(heading)
+
     mainList.appendChild(closeIcon)
+    mainList.appendChild(content)
     mainList.appendChild(buttonContainer)
+    mainList.ondrop = (event, el) => onDrop(event, id)
+    mainList.ondragover = (ev) => ev.preventDefault();
+
     listContainer.appendChild(mainList);
 
-    if(list.tasks && list.tasks.length) {
-        list.tasks.forEach((item) => renderListTask(item, id))
+    if(tasks && tasks.length) {
+        tasks.forEach((item) => renderListTask(item, id))
     }
   }
 
 const saveTask = (parentId, task) => {
-
-    const lists = window.localStorage.getItem('allLists') || "{}";
-    const allLists = JSON.parse(lists);
-    const length = Object.keys(allLists).length;
-
-    console.log('allLost in saveTask', allLists, parentList)
-    let taskName = '';
-
-    const parentList = { ...allLists[parentId]}
-
-    parentList.tasks({ ...task, parentId })
-
-    console.log('paent list', parentList)
-
-    allLists[parenId] = parentList
-    window.localStorage.setItem("allLists", JSON.stringify(allLists));
-
-    renderTask(task, taskName);
-    taskName="";
+    const allTasks = getTasks()
+    allTasks.push({ ...task, parentId})
+    setTasks(allTasks)
+    renderListTask(task, parentId);
 };
 
 
 const saveList = (name) => {
-
-    const lists = window.localStorage.getItem('allLists') || "{}";
-    const allLists = JSON.parse(lists);
-    console.log('allList', allLists)
-    const length = Object.keys(allLists).length;
+    const allLists = getList();
     let listName = camelize(name);
-    const list = { name, id: listName, tasks: []}
+    const list = { name, id: listName }
     allLists[listName] = list
-    console.log('after', allLists)
-    window.localStorage.setItem("allLists", JSON.stringify(allLists));
-    renderList(list, listName);
-    taskName="";
+    setList(allLists)
+    renderList(list, listName, []);
 };

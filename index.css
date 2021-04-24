@@ -136,7 +136,6 @@ ol.trello {
     position: relative;
     list-style: none;
     font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-    min-height: 48px;
     display: -webkit-flex;
     display: -ms-flexbox;
     display: flex;
@@ -144,7 +143,7 @@ ol.trello {
     -ms-flex-direction: column;
     flex-direction: column;
     font-size: 16px;
-    min-height: 120px;
+    min-height: 80px;
     overflow: hidden;
     z-index: 1;
     position: relative;
@@ -263,6 +262,10 @@ select, input {
 
 .list-heading {
     display: inline;
+}
+
+.list-desc {
+    word-break: break-word;
 }
 
 .close {
